@@ -9,7 +9,19 @@ let links = [
 ];
 
 linkbutt.addEventListener("click", function (e) {
-
+  let site_name = prompt("Name of Website");
+  let site_url = prompt("URL of Website");
+  let newLink = {};
+  if (site_name !== null && site_url !== null) {
+    site_url = site_url.trim();
+    site_name = site_name.trim();
+    if (site_name !== "" && site_url !== "" && site_url.startsWith("http")) {
+      newLink.name = site_name;
+      newLink.url = site_url;
+      links.push(newLink);
+      renderList()
+    }
+  }
 });
 
 function renderList() {
