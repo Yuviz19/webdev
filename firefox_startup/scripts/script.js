@@ -2,6 +2,8 @@ const form = document.getElementById("searchform");
 const input = document.getElementById("searchinput");
 const linksul = document.getElementById("links");
 const linkbutt = document.getElementById("newLinkbutt");
+const delbutt = document.getElementById("delLinkbutt");
+let deleteMode = false;
 
 let links = [
   { name: "Youtube", url: "https://www.youtube.com/" },
@@ -12,6 +14,7 @@ linkbutt.addEventListener("click", function (e) {
   let site_name = prompt("Name of Website");
   let site_url = prompt("URL of Website");
   let newLink = {};
+
   if (site_name !== null && site_url !== null) {
     site_url = site_url.trim();
     site_name = site_name.trim();
@@ -24,28 +27,55 @@ linkbutt.addEventListener("click", function (e) {
   }
 });
 
+delbutt.addEventListener("click", function () {
+  deleteMode = !deleteMode;
+  renderList()
+});
+
 function renderList() {
   linksul.innerHTML = "";
-  for (const link of links) {
+  for (let i = 0; i < links.length; i++) {
+    const link = links[i];
     const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.href = link.url;
-    a.textContent = link.name;
-    a.target = "_blank";
-    li.appendChild(a);
+
+    if (deleteMode) {
+      const div = document.createElement("div");
+      const button = document.createElement("button");
+
+      button.textContent = "X";
+
+      button.addEventListener("click", function () {
+        links.splice(i, 1);
+        deleteMode = !deleteMode;
+        renderList();
+      });
+
+      div.textContent = link.name;
+      div.appendChild(button);
+      li.appendChild(div);
+    } else {
+        const a = document.createElement("a");
+        a.href = link.url;
+        a.textContent = link.name;
+        a.target = "_blank";
+        li.appendChild(a);
+      }
     linksul.appendChild(li);
-  };
-};
+  }
+}
 
 renderList();
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
+
   let entry = input.value;
   entry = entry.trim();
+
   if (entry === "") {
     return;
   };
+
   const safe = encodeURIComponent(entry);
   let url = `https://www.google.com/search?q=${safe}`;
   window.open(url, "_blank");
