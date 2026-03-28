@@ -3,7 +3,12 @@ const input = document.getElementById("searchinput");
 const linksul = document.getElementById("links");
 const linkbutt = document.getElementById("newLinkbutt");
 const delbutt = document.getElementById("delLinkbutt");
+const left = document.getElementById("left");
+const right = document.getElementById("right");
 let deleteMode = false;
+
+updateDay();
+setInterval(updateDay, 60000);
 
 let links = JSON.parse(localStorage.getItem("fire_linx")) || [];
 
@@ -40,6 +45,7 @@ function renderList() {
     const link = links[i];
     const li = document.createElement("li");
 
+    // delete state - "X" button, div tags instead of a tags
     if (deleteMode) {
       const div = document.createElement("div");
       const button = document.createElement("button");
@@ -79,8 +85,53 @@ form.addEventListener("submit", function(e) {
     return;
   };
 
-  const safe = encodeURIComponent(entry);
+  const safe = encodeURIComponent(entry); // direct searching doesn't work
   let url = `https://www.google.com/search?q=${safe}`;
   window.open(url, "_blank");
   input.value = "";
 });
+
+function updateDay() {
+  const time = new Date();
+  const formated = time.toLocaleDateString("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+  right.textContent = formated;
+}
+
+function capitalize(str) {
+  return str
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+async function updateWeather() {
+  try {
+    let res = await fetch("https://wttr.in/?format=j1");
+
+    if (!res.ok) {
+      left.textContent = "Weather Not Available!";
+      return;
+    }
+
+    const data = await res.json();
+
+    let curr_temp = data.current_condition[0].FeelsLikeC;
+    let feelsLike = data.current_condition[0].weatherDesc[0].value;
+    let feel = capitalize(feelsLike);
+
+    console.log(curr_temp)
+    console.log(feel)
+    left.textContent = `${curr_temp}°C | ${feel}`;
+
+  } catch {
+    left.textContent = "Weather Error";
+  }
+}
+
+updateWeather()
+setInterval(updateWeather, 3600000);
