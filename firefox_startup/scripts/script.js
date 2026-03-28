@@ -5,10 +5,11 @@ const linkbutt = document.getElementById("newLinkbutt");
 const delbutt = document.getElementById("delLinkbutt");
 let deleteMode = false;
 
-let links = [
-  { name: "Youtube", url: "https://www.youtube.com/" },
-  { name: "YTMusic", url: "https://music.youtube.com/" }
-];
+let links = JSON.parse(localStorage.getItem("fire_linx")) || [];
+
+function saveLinks() {
+  localStorage.setItem("fire_linx", JSON.stringify(links));
+};
 
 linkbutt.addEventListener("click", function (e) {
   let site_name = prompt("Name of Website");
@@ -22,7 +23,8 @@ linkbutt.addEventListener("click", function (e) {
       newLink.name = site_name;
       newLink.url = site_url;
       links.push(newLink);
-      renderList()
+      saveLinks();
+      renderList();
     }
   }
 });
@@ -46,7 +48,8 @@ function renderList() {
 
       button.addEventListener("click", function () {
         links.splice(i, 1);
-        deleteMode = !deleteMode;
+        saveLinks();
+        deleteMode = false;
         renderList();
       });
 
