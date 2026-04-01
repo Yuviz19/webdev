@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-def home(response):
-    return HttpResponse("HOME PAGE")
+def home(request):
+    return render(request, 'home.html')
 
-def rooms(response):
-    return HttpResponse("ROOMS PAGE")
+def rooms(request):
+    return render(request, 'room.html')
