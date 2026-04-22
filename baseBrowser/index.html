@@ -3,9 +3,19 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title></title>
+	<title>Base Brower</title>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+    <script src="script.js"></script>
+    <div class="searchbar">
+        <form action="" id="search_form">
+            <input type="text" id="urlInput" placeholder="Enter Query...">
+            <button type="submit" id="search">Go!</button>
+        </form>
+    </div>
+    <div id="result">
+        <iframe width="100%" height="500" id="viewer" frameborder="1"></iframe>
+    </div>
 </body>
 </html>
