@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
       entry = "https://" + entry;
     };
 
-    if (state.currentUrl != "") {
+    if (state.currentUrl != "" && state.currentUrl !== entry) {
       state.backStack.push(state.currentUrl);
       state.forwardStack = [];
     };
