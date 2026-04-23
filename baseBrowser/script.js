@@ -4,12 +4,47 @@ document.addEventListener("DOMContentLoaded", () => {
   const view_frame = document.getElementById("viewer");
   const backward = document.getElementById("back");
   const forward = document.getElementById("forward");
+  const addTab = document.getElementById("add_tab");
+  const tab_container = document.getElementById("tabs_container");
 
   let state = {
-    backStack: [],
-    currentUrl: "",
-    forwardStack: []
+    tab: [
+      {
+        id: 1,
+        backStack: [],
+        currentUrl: "",
+        forwardStack: [],
+      }
+    ],
+    activeTabId: 1
   };
+
+  // add an intial tab
+  function InitFirstTab() {
+    newTab = document.createElement("button");
+    newTab.id = state.tab[0].id;
+    newTab.textContent = "Tab 1";
+
+    tab_container.appendChild(newTab);
+  };
+
+  InitFirstTab();
+
+  // logic for tab addition and in-tab navigation
+  addTab.addEventListener("click", () => {
+      newTab = document.createElement("button");
+
+      // get the id of the last tab
+      lastTabId = state.tab.length;
+
+      newTab.id = lastTabId + 1;
+      newTab.textContent = `Tab ${lastTabId + 1}`;
+
+      tab_container.appendChild(newTab);
+
+      state.tab.push({id: newTab.id, backStack: [], currentUrl: "", forwardStack: []})
+      state.activeTabId = newTab.id;
+    });
 
   backward.addEventListener("click",() => {
     if (state.backStack.length === 0) {
