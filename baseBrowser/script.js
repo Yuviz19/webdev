@@ -22,51 +22,71 @@ document.addEventListener("DOMContentLoaded", () => {
   // add an intial tab
   function InitFirstTab() {
     newTab = document.createElement("button");
-    newTab.id = state.tab[0].id;
+    newTab.dataset.id = state.tab[0].id;
     newTab.textContent = "Tab 1";
 
     tab_container.appendChild(newTab);
   };
 
   InitFirstTab();
+  render();
 
   // logic for tab addition and in-tab navigation
   addTab.addEventListener("click", () => {
-      newTab = document.createElement("button");
+    const newTab = document.createElement("button");
+    // get the id of the last tab
+    const lastTabId = state.tab.length;
+    const newid = lastTabId + 1;
+    newTab.dataset.id = newid;
+    newTab.textContent = `Tab ${lastTabId + 1}`;
 
-      // get the id of the last tab
-      lastTabId = state.tab.length;
+    tab_container.appendChild(newTab);
 
-      newTab.id = lastTabId + 1;
-      newTab.textContent = `Tab ${lastTabId + 1}`;
+    state.tab.push({id: newid, backStack: [], currentUrl: "", forwardStack: []})
+    state.activeTabId = newid;
 
-      tab_container.appendChild(newTab);
+    render()
+  });
 
-      state.tab.push({id: newTab.id, backStack: [], currentUrl: "", forwardStack: []})
-      state.activeTabId = newTab.id;
-    });
+  tab_container.addEventListener("click", (e) => {
+    const target = e.target.closest("button");
 
-  backward.addEventListener("click",() => {
-    if (state.backStack.length === 0) {
+    if (!target || !target.dataset.id) return;
+
+    const id = Number(target.dataset.id);
+    state.activeTabId = id;
+    render();
+  });
+
+  function getActiveTab() {
+    return state.tab.find(tab => tab.id === state.activeTabId);
+  };
+
+  backward.addEventListener("click", () => {
+    let curr_tab = getActiveTab()
+
+    if (curr_tab.backStack.length === 0) {
       return;
     };
 
-    if (state.currentUrl !== "") {
-      state.forwardStack.push(state.currentUrl);
+    if (curr_tab.currentUrl !== "") {
+      curr_tab.forwardStack.push(curr_tab.currentUrl);
     };
-    state.currentUrl = state.backStack.pop();
+    curr_tab.currentUrl = curr_tab.backStack.pop();
     render();
   });
 
   forward.addEventListener("click", () => {
-    if (state.forwardStack.length === 0) {
+    let curr_tab = getActiveTab();
+
+    if (curr_tab.forwardStack.length === 0) {
       return;
     };
 
-    if (state.currentUrl !== "") {
-      state.backStack.push(state.currentUrl);
+    if (curr_tab.currentUrl !== "") {
+      curr_tab.backStack.push(curr_tab.currentUrl);
     };
-    state.currentUrl = state.forwardStack.pop();
+    curr_tab.currentUrl = curr_tab.forwardStack.pop();
     render();
   });
 
@@ -80,20 +100,23 @@ document.addEventListener("DOMContentLoaded", () => {
       entry = "https://" + entry;
     };
 
-    if (state.currentUrl != "" && state.currentUrl !== entry) {
-      state.backStack.push(state.currentUrl);
-      state.forwardStack = [];
+    let curr_tab = getActiveTab();
+
+    if (curr_tab.currentUrl != "" && curr_tab.currentUrl !== entry) {
+      curr_tab.backStack.push(curr_tab.currentUrl);
+      curr_tab.forwardStack = [];
     };
 
-    state.currentUrl = entry;
+    curr_tab.currentUrl = entry;
 
     render();
   });
 
   function render() {
-    view_frame.src = state.currentUrl;
-    urlInput.value = state.currentUrl;
-    backward.disabled = state.backStack.length === 0;
-    forward.disabled = state.forwardStack.length === 0;
+    let curr_tab = getActiveTab();
+    view_frame.src = curr_tab.currentUrl;
+    urlInput.value = curr_tab.currentUrl;
+    backward.disabled = curr_tab.backStack.length === 0;
+    forward.disabled = curr_tab.forwardStack.length === 0;
   };
 });
