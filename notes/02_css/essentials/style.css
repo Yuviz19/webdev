@@ -1,0 +1,29 @@
+/* We need a colorful background behind the card, otherwise the glass won't be visible! */
+.glass-container {
+  background: linear-gradient(135deg, #000000 0%, #c3cfe6 100%, #f43f5e 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glass-card {
+  /* 1. Semi-transparent background (using rgba for alpha control) */
+  background: rgba(255, 255, 255, 0.2);
+
+  /* 2. The Magic Ingredient: Blurs everything behind this element */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Safari support */
+
+  /* 3. A subtle, light border to simulate the glass edge reflection */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  /* 4. Formatting & styling */
+  padding: 30px;
+  border-radius: 16px;
+  width: 350px;
+  color: #1f2937; /* Dark text for contrast */
+
+  /* Optional: Soft shadow to lift the card off the background */
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
